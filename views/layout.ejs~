@@ -16,20 +16,20 @@
     <link rel="shortcut icon" href='favicon.ico'  type="image/x-icon" />
   </head>
   <body>
-   <header>
-    <h2>Quiz: El juego de las preguntas</h2>
+   <header class="main">
+    <h2>Quiz<span class="no-narrow">: El juego de las preguntas</span></h2>
    </header>
 
-    <nav>
+    <nav class="main" role="navigation">
      <a href="/">Inicio</a>
      <a href="/question">Preguntas</a>
     </nav>
 
-    <section>
+    <section class="main">
       <div><%- body %></div>
     </section>
 
-    <footer>
+    <footer class="main">
      <a href="http://es.wikipedia.org/wiki/Quiz"> ¿Qué es un Quiz?</a>
      <a href="https://github.com/JavierAmorDeLaCruz/quiz"> Repositorio en Github del del proyecto. </a>
     </foooter>
