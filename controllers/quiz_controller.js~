@@ -1,0 +1,3 @@
+// GET /question
+exports.question = function(req, res, next){
+res.render
