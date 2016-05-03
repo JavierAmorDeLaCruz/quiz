@@ -1,3 +1,4 @@
+console.log("Ejecuta quiz.js --models");
 module.exports = function(sequelize, DataTypes){
 	return sequelize.define('Quiz',
 	{
