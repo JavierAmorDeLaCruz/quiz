@@ -18,13 +18,34 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizzes
 exports.index = function(req, res, next) {
-	models.Quiz.findAll()
+	if(req.query.busqueda){
+		var texto_a_buscar = '%' + req.query.busqueda + '%';
+		texto_a_buscar = texto_a_buscar.replace(/ /g, "%"); //Reemplaza los espacios en blanco por %
+		console.log(texto_a_buscar);
+		models.Quiz.findAll({where: ["question like ?", texto_a_buscar]})
+		.then(function(quizzes) {
+			if(quizzes[0]!== undefined){
+				req.flash('success', 'Su búsqueda produjo estos resultados:');
+			}
+			else{
+				req.flash('error', 'No se encontraron coincidencias con su búsqueda');
+			}
+			
+			res.render('../quizzes/index.ejs', { quizzes: quizzes});
+		})
+		.catch(function(error) {
+			next(error);
+		});
+	}
+	else {
+		models.Quiz.findAll()
 		.then(function(quizzes) {
 			res.render('../quizzes/index.ejs', { quizzes: quizzes});
 		})
 		.catch(function(error) {
 			next(error);
 		});
+	}
 };
 
 // GET /quizzes/:id
