@@ -39,3 +39,24 @@ exports.check = function(req, res){
   var result= answer === req.quiz.answer ? 'Correcta' : 'Incorrecta';
   res.render('../quizzes/result.ejs', { quiz: req.quiz, result : result, answer : answer});
 };
+
+// GET /quizzes/new
+exports.new = function(req, res, next) {
+  var quiz = models.Quiz.build({question: "", answer: ""});
+  res.render('../quizzes/new.ejs', {quiz: quiz});
+};
+
+// POST /quizzes/create
+exports.create = function(req, res, next) {
+  var quiz = models.Quiz.build({ question: req.body.quiz.question, 
+  	                             answer:   req.body.quiz.answer} );
+
+// guarda en DB los campos pregunta y respuesta de quiz
+  quiz.save({fields: ["question", "answer"]})
+  	.then(function(quiz) {
+    	res.redirect('/quizzes');  // res.redirect: Redirección HTTP a lista de preguntas
+    })
+    .catch(function(error) {
+		next(error);
+	});  
+};
