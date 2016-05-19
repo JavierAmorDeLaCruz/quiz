@@ -37,7 +37,19 @@ exports.index = function(req, res, next) {
 			next(error);
 		});
 	}
+  else if(req.path.split(".")[1]==="json"){
+   models.Quiz.findAll()
+    .then(function(quizzes) {
+      res.json({ quizzes: quizzes});
+    })
+    .catch(function(error) {
+      next(error);
+    });
+  }
+
 	else {
+    console.log("Entra en el Else Final");
+    console.log(req.path);
 		models.Quiz.findAll()
 		.then(function(quizzes) {
 			res.render('../quizzes/index.ejs', { quizzes: quizzes});
@@ -50,8 +62,14 @@ exports.index = function(req, res, next) {
 
 // GET /quizzes/:id
 exports.show = function (req, res, next){
+  if(req.path.split(".")[1]==="json"){  
+      res.json({ quiz: req.quiz});
+    }
+  
+  else {
   var answer = req.query.answer || '';
   res.render('../quizzes/show.ejs', {quiz: req.quiz, answer : answer});
+}
 };
 
 // GET /quizzes/:id/check
