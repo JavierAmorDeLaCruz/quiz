@@ -3,7 +3,7 @@ var models = require('../models');
 var Sequelize = require('sequelize');
 // Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId) {
-	models.Quiz.findById(quizId)
+	models.Quiz.findById(quizId, { include: [ models.Comment ] })
   		.then(function(quiz) {
       		if (quiz) {
         		req.quiz = quiz;
@@ -31,7 +31,7 @@ exports.index = function(req, res, next) {
 				req.flash('error', 'No se encontraron coincidencias con su búsqueda');
 			}
 			
-			res.render('../quizzes/index.ejs', { quizzes: quizzes});
+			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
 		.catch(function(error) {
 			next(error);
@@ -52,7 +52,7 @@ exports.index = function(req, res, next) {
     console.log(req.path);
 		models.Quiz.findAll()
 		.then(function(quizzes) {
-			res.render('../quizzes/index.ejs', { quizzes: quizzes});
+			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
 		.catch(function(error) {
 			next(error);
@@ -68,7 +68,7 @@ exports.show = function (req, res, next){
   
   else {
   var answer = req.query.answer || '';
-  res.render('../quizzes/show.ejs', {quiz: req.quiz, answer : answer});
+  res.render('quizzes/show.ejs', {quiz: req.quiz, answer : answer});
 }
 };
 
@@ -76,13 +76,13 @@ exports.show = function (req, res, next){
 exports.check = function(req, res){
   var answer = req.query.answer || '';
   var result= answer === req.quiz.answer ? 'Correcta' : 'Incorrecta';
-  res.render('../quizzes/result.ejs', { quiz: req.quiz, result : result, answer : answer});
+  res.render('quizzes/result.ejs', { quiz: req.quiz, result : result, answer : answer});
 };
 
 // GET /quizzes/new
 exports.new = function(req, res, next) {
   var quiz = models.Quiz.build({question: "", answer: ""});
-  res.render('../quizzes/new.ejs', {quiz: quiz});
+  res.render('quizzes/new.ejs', {quiz: quiz});
 };
 
 // POST /quizzes/create
@@ -103,7 +103,7 @@ exports.create = function(req, res, next) {
           req.flash('error', error.errors[i].value);
      };
 
-      res.render('../quizzes/new.ejs', {quiz: quiz});
+      res.render('quizzes/new.ejs', {quiz: quiz});
      })
     .catch(function(error) {
     	req.flash('error', 'Error al crear un Quiz: '+error.message);
@@ -115,7 +115,7 @@ exports.create = function(req, res, next) {
 exports.edit = function(req, res, next) {
   var quiz = req.quiz;  // req.quiz: autoload de instancia de quiz
 
-  res.render('../quizzes/edit.ejs', {quiz: quiz});
+  res.render('quizzes/edit.ejs', {quiz: quiz});
 };
 
 
@@ -137,7 +137,7 @@ exports.update = function(req, res, next) {
           req.flash('error', error.errors[i].value);
       };
 
-     res.render('../quizzes/edit.ejs', {quiz: req.quiz});
+     res.render('quizzes/edit.ejs', {quiz: req.quiz});
     })
     .catch(function(error) {
 	  req.flash('error', 'Error al editar el Quiz: '+error.message);
