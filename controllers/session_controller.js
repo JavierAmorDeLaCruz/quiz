@@ -22,6 +22,16 @@ var authenticate = function(login, password) {
             }
         });
 }; 
+// Middleware: Se requiere hacer login.
+// Si el usuario esta logueado se ejecuta el siguiente MW
+// Si no, se redirige 
+exports.loginRequired = function (req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/session?redir=' + (req.param('redir') || req.url));
+    }
+};
 
 // GET /session   -- Formulario de login
 exports.new = function(req, res, next) {
