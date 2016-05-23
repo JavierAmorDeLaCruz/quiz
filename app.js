@@ -39,6 +39,23 @@ app.use(function(req, res, next) {
    next();
 });
 
+//MW para AutoLogout
+// Si un usuario logueado tarda más de 2 min en realizar una petición HTTP se le desconecta del servidor
+// Si no se reinicia el contador 
+ app.use(function(req, res, next) {
+  if (req.session.user) {
+    if (Date.now() - req.session.user.tiempoSesion > (2*1000*60)){
+    req.flash('error', 'Su sesión ha expirado, por favor vuelva a loguearse.');
+    delete req.session.user;
+    next();
+    } else {
+    req.session.user.tiempoSesion = Date.now();
+    next();
+    }
+  } else {
+next(); }
+});
+
 app.use('/', routes);
 
 
