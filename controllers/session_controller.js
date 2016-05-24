@@ -33,6 +33,36 @@ exports.loginRequired = function (req, res, next) {
     }
 };
 
+//MW que comprueba que el usuario es admin o el propietario de la cuenta 
+exports.adminOrMyselfRequired = function(req,res,next){
+
+    var isAdmin      = req.session.user.isAdmin;
+    var userId       = req.user.id;
+    var loggedUserId = req.session.user.id;
+
+    if (isAdmin || userId === loggedUserId) {
+        next();
+    } else {
+      console.log('Operación prohibida: No es el usuario logeado ni un administrador.');
+      res.send(403);
+    }
+};
+
+//MW que comprueba que el usuario es admin y además no es el propietario de la cuenta
+exports.adminAndNotMyselfRequired = function(req,res,next){
+
+    var isAdmin      = req.session.user.isAdmin;
+    var userId       = req.user.id;
+    var loggedUserId = req.session.user.id;
+
+    if (isAdmin && userId !== loggedUserId) {
+        next();
+    } else {
+      console.log('Operación prohibida: No es el usuario logeado ni un administrador.');
+      res.send(403);
+    }
+};
+
 // GET /session   -- Formulario de login
 exports.new = function(req, res, next) {
 	var redir = req.query.redir || url.parse(req.headers.referer || "/").pathname;
@@ -55,7 +85,7 @@ exports.create = function(req, res, next) {
             // Crear req.session.user y guardar campos id y username
 	        // La sesión se define por la existencia de: req.session.user	
             if (user) {
-            	req.session.user = {id:user.id, username:user.username, tiempoSesion:Date.now()};
+            	req.session.user = {id:user.id, username:user.username, isAdmin: user.isAdmin, tiempoSesion:Date.now()};
             	res.redirect(redir);
             } else {
             	res.redirect("/session?redir="+redir); // redirección a la raiz

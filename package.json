@@ -6,8 +6,8 @@
     "start": "node ./bin/www",
     "migrate_local": "node_modules/.bin/sequelize db:migrate --url sqlite://$(pwd)/quiz.sqlite",
     "seed_local": "node_modules/.bin/sequelize db:seed:all --url sqlite://$(pwd)/quiz.sqlite",
-    "migrate_heroku": "heroku run node_modules/.bin/sequelize db:migrate --config package.json --url \\$DATABASE_URL",
-    "seed_heroku": "heroku run node_modules/.bin/sequelize db:seed:all --config package.json --url \\$DATABASE_URL",
+    "migrate_heroku": "heroku run node_modules/.bin/sequelize db:migrate --config package.json --url postgres://faunoowmqxqqgk:OtpZ9lOacAmwsgz_wfMEXZhVJ9@ec2-54-243-195-46.compute-1.amazonaws.com:5432/d77hi6d9n5nl7j",
+    "seed_heroku": "heroku run node_modules/.bin/sequelize db:seed:all --config package.json --url postgres://faunoowmqxqqgk:OtpZ9lOacAmwsgz_wfMEXZhVJ9@ec2-54-243-195-46.compute-1.amazonaws.com:5432/d77hi6d9n5nl7j",
     "reset_heroku": "heroku pg:reset DATABASE"
   },
   "engines": {
