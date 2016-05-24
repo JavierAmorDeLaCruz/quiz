@@ -6,7 +6,14 @@
 
 var app = require('../app');
 var debug = require('debug')('quiz:server');
+var fs =  require("fs");
 var http = require('http');
+
+
+var options = {
+  key: fs.readFileSync('certs/quiz-2016-key.pem').toString(),
+  cert: fs.readFileSync('certs/quiz-2016-cert.pem').toString()
+};
 
 /**
  * Get port from environment and store in Express.
