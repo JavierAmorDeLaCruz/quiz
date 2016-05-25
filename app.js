@@ -1,3 +1,4 @@
+console.log("Ejecuta app.js");
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -9,6 +10,7 @@ var partials = require('express-partials');
 var flash = require('express-flash');
 var methodOverride = require('method-override');
 var routes = require('./routes/index');
+var cloudinary = require('cloudinary');
 
 var app = express();
 
@@ -18,6 +20,12 @@ app.set('view engine', 'ejs');
 
 app.use(partials());
 
+// Configuracion de acceso a cloudinary
+cloudinary.config({ 
+  cloud_name: 'core2016', 
+  api_key: '942668474153691', 
+  api_secret: '8azqsGLRWwmjRnfXDtxG4vh_luo' 
+});
 
 // En produccion (Heroku) redirijo las peticiones http a https.
 // Documentacion: http://jaketrent.com/post/https-redirect-node-heroku/
