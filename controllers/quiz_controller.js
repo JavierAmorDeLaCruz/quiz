@@ -138,6 +138,9 @@ exports.create = function(req, res, next) {
     .catch(Sequelize.ValidationError, function(error) {
         req.flash('error', 'Errores en el formulario:');
         for (var i in error.errors) {
+          console.log(error);
+          console.log(error.errors[i]);
+          console.log(error.errors[i].value);
             req.flash('error', error.errors[i].value);
         };
   

@@ -29,9 +29,13 @@ exports.new = function(req, res, next) {
 
 // POST /quizes/:quizId/comments
 exports.create = function(req, res, next) {
+
+ var authorId = req.session.user && req.session.user.id || 0;
+
   var comment = models.Comment.build(
       { text:   req.body.comment.text,          
-        QuizId: req.quiz.id
+        QuizId: req.quiz.id,
+        AuthorId: authorId
       });
 
   comment.save()
@@ -43,7 +47,10 @@ exports.create = function(req, res, next) {
 
       req.flash('error', 'Errores en el formulario:');
       for (var i in error.errors) {
-          req.flash('error', error.errors[i].value);
+          console.log(error);
+          console.log(error.errors[i]);
+          console.log(error.errors[i].value);
+          req.flash('error', error.errors[i].message);
       };
 
       res.render('comments/new', { comment: comment,
