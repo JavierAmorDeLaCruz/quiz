@@ -44,6 +44,14 @@ exports.ownershipRequired = function(req, res, next){
 
 // GET /quizzes
 exports.index = function(req, res, next) {
+
+var options = {};
+ if (req.user) {
+   options.where = {AuthorId: req.user.id}
+  }
+
+ options.include = [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}];
+
 	if(req.query.busqueda){
 		var texto_a_buscar = '%' + req.query.busqueda + '%';
 		texto_a_buscar = texto_a_buscar.replace(/ /g, "%"); //Reemplaza los espacios en blanco por %
@@ -75,8 +83,7 @@ exports.index = function(req, res, next) {
   }
 
 	else {
-    console.log(req.path);
-		models.Quiz.findAll({include: [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}]})
+		models.Quiz.findAll(options)
 		.then(function(quizzes) {
 			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
