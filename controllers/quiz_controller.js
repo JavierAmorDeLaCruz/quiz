@@ -11,7 +11,10 @@ var cloudinary_image_options = {crop: 'limit', width: 200, height: 200, radiius:
 
 // Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId) {
-	models.Quiz.findById(quizId, { include: [ models.Comment, models.Attachment ] })
+	models.Quiz.findById(quizId, { include: [ { model: models.Comment, include:
+                                                     [{model: models.User, as: 'Author', attributes: ['username']}]},
+                                              models.Attachment,
+                                                      {model: models.User, as: 'Author', attributes: ['username']} ] })
   		.then(function(quiz) {
       		if (quiz) {
         		req.quiz = quiz;
@@ -45,7 +48,8 @@ exports.index = function(req, res, next) {
 		var texto_a_buscar = '%' + req.query.busqueda + '%';
 		texto_a_buscar = texto_a_buscar.replace(/ /g, "%"); //Reemplaza los espacios en blanco por %
 		console.log(texto_a_buscar);
-		models.Quiz.findAll({where: ["question like ?", texto_a_buscar]})
+		models.Quiz.findAll({where: ["question like ?", texto_a_buscar],
+                         include: [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}]})
 		.then(function(quizzes) {
 			if(quizzes[0]!== undefined){
 				req.flash('success', 'Su búsqueda produjo estos resultados:');
@@ -72,7 +76,7 @@ exports.index = function(req, res, next) {
 
 	else {
     console.log(req.path);
-		models.Quiz.findAll({include: [models.Attachment]})
+		models.Quiz.findAll({include: [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}]})
 		.then(function(quizzes) {
 			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
