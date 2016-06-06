@@ -16,7 +16,21 @@ exports.load = function(req, res, next, commentId) {
         .catch(function(error) { next(error); });
 };
 
+exports.AdminOrOwnerQuizOrOwnerCommentRequired = function(req,res,next){
+  
+  var isAdmin = req.session.user.isAdmin;
+  var quizAuthorId = req.quiz.AuthorId;
+  var loggedUserId = req.session.user.id;
+  var commentAuthorId = req.comment.AuthorId;
 
+  if(isAdmin || loggedUserId===quizAuthorId || loggedUserId===commentAuthorId){
+    next();
+  }
+  else {
+      console.log('Operación prohibida: El usuario logeado no es el autor del quiz, ni un administrador, ni autor del comentario');
+      res.send(403);
+  }
+};
 // GET /quizzes/:quizId/comments/new
 exports.new = function(req, res, next) {
   var comment = models.Comment.build({text: ""});
@@ -78,3 +92,16 @@ exports.accept = function(req, res, next) {
        next(error);
     });
   };
+
+// Delete /quizzes/:quizId/comments/:commentId
+exports.destroy = function(req,res,next){
+  req.comment.destroy()
+  .then(function(){
+     req.flash('success', 'Comentario borrado con éxito.');
+     res.redirect('/quizzes/'+req.params.quizId);
+  })
+  .catch(function(error){
+      req.flash('error', 'Error al borrar el comentario: '+error.message);
+        next(error);
+      });
+};

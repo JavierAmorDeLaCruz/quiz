@@ -38,6 +38,10 @@
                 if (comment.Author) { %>
            ::: Escrito por: <%= comment.Author.username %> (Usuario: <a href="/users/<%= comment.AuthorId %>"><%= comment.AuthorId %></a>)
            <% } }%>
+
+           <% if ((session.user) && comment.AuthorId === session.user.id) { %>
+            <a href="/quizzes/<%= quiz.id %>/comments/<%= comment.id %>?_method=DELETE"><button>Borrar</button></a>
+            <% } %>
             </li>
        <% } else if ((session.user) && (session.user.isAdmin || (quiz.AuthorId === session.user.id)))  { %>
            
@@ -47,10 +51,12 @@
             if (comment.Author) { %>
            ::: Escrito por: <%= comment.Author.username %> (Usuario: <a href="/users/<%= comment.AuthorId %>"><%= comment.AuthorId %></a>)
            <% } }%>
-           </li>
+           
            <a href="/quizzes/<%= quiz.id %>/comments/<%= comment.id %>/accept?_method=PUT">
               <button>Aceptar Comentario</button>
            </a>
+           <a href="/quizzes/<%= quiz.id %>/comments/<%= comment.id %>?_method=DELETE"><button>Borrar</button></a>
+           </li>
        <% } %>
   <% } %>
 </ul>

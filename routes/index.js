@@ -50,7 +50,7 @@ router.delete('/quizzes/:quizId(\\d+)',    sessionController.loginRequired, quiz
 router.get('/quizzes/:quizId(\\d+)/comments/new',  sessionController.loginRequired, commentController.new);
 router.post('/quizzes/:quizId(\\d+)/comments',     sessionController.loginRequired, commentController.create);
 router.put('/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)/accept', sessionController.loginRequired, quizController.ownershipRequired, commentController.accept);
-
+router.delete('/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)', sessionController.loginRequired, commentController.AdminOrOwnerQuizOrOwnerCommentRequired, commentController.destroy)
 //Sessions
 router.get('/session',    sessionController.new);     // formulario login
 router.post('/session',   sessionController.create);  // crear sesión
