@@ -60,8 +60,8 @@ router.delete('/session', sessionController.destroy); // destruir sesión
 
 //Favourites
 router.get('/users/:userId(\\d+)/favourites', favouriteController.index);
-router.put('/users/:userId([0-9]+)/favourites/:quizId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, favouriteController.add);
-router.delete('/users/:userId([0-9]+)/favourites/:quizId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, favouriteController.del);
+router.put('/users/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, favouriteController.add);
+router.delete('/users/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, favouriteController.del);
 
 
 module.exports = router;

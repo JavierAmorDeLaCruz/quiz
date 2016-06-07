@@ -62,16 +62,7 @@ var options = {};
 		console.log(texto_a_buscar);
 		models.Quiz.findAll({where: ["question like ?", texto_a_buscar],
                          include: [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}]})
-		.then(function(quizzes) {
-
-      if (req.session.user) {
-        quizzes.forEach(function(quiz) {
-                    quiz.favourite = quiz.Fans.some(function(fan) {
-                        return fan.id == req.session.user.id;
-                    }); 
-                  });
-            } 
-            
+		.then(function(quizzes) {        
 			if(quizzes[0]!== undefined){
 				req.flash('success', 'Su búsqueda produjo estos resultados:');
 			}
