@@ -1,5 +1,3 @@
- <h2>Pregunta</h2>
- <br>
  <%- include ../favourites/_stars.ejs %>
   <form method="get" action="/quizzes/<%= quiz.id %>/check">
     <p> Pregunta:<strong> <%= quiz.question %> </strong></p>
@@ -42,7 +40,7 @@
            ::: Escrito por: <%= comment.Author.username %> (Usuario: <a href="/users/<%= comment.AuthorId %>"><%= comment.AuthorId %></a>)
            <% } }%>
 
-           <% if ((session.user) && comment.AuthorId === session.user.id) { %>
+           <% if ((session.user) && (comment.AuthorId === session.user.id || session.user.isAdmin || (quiz.AuthorId === session.user.id) )) { %>
             <a href="/quizzes/<%= quiz.id %>/comments/<%= comment.id %>?_method=DELETE"><button>Borrar</button></a>
             <% } %>
             </li>
