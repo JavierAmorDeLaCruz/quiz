@@ -8,6 +8,7 @@ var quizController = require('../controllers/quiz_controller');
 var commentController = require('../controllers/comment_controller');
 var userController = require('../controllers/user_controller');
 var sessionController = require('../controllers/session_controller');
+var favouriteController = require('../controllers/favourite_controller');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -50,10 +51,17 @@ router.delete('/quizzes/:quizId(\\d+)',    sessionController.loginRequired, quiz
 router.get('/quizzes/:quizId(\\d+)/comments/new',  sessionController.loginRequired, commentController.new);
 router.post('/quizzes/:quizId(\\d+)/comments',     sessionController.loginRequired, commentController.create);
 router.put('/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)/accept', sessionController.loginRequired, quizController.ownershipRequired, commentController.accept);
-router.delete('/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)', sessionController.loginRequired, commentController.AdminOrOwnerQuizOrOwnerCommentRequired, commentController.destroy)
+router.delete('/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)', sessionController.loginRequired, commentController.AdminOrOwnerQuizOrOwnerCommentRequired, commentController.destroy);
+
 //Sessions
 router.get('/session',    sessionController.new);     // formulario login
 router.post('/session',   sessionController.create);  // crear sesión
 router.delete('/session', sessionController.destroy); // destruir sesión
+
+//Favourites
+router.get('/users/:userId(\\d+)/favourites', favouriteController.index);
+router.put('/users/:userId([0-9]+)/favourites/:quizId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, favouriteController.add);
+router.delete('/users/:userId([0-9]+)/favourites/:quizId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, favouriteController.del);
+
 
 module.exports = router;

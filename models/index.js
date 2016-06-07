@@ -51,6 +51,13 @@ Comment.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
 Attachment.belongsTo(Quiz);
 Quiz.hasOne(Attachment);
 
+// Favoritos:
+//   Un Usuario tiene muchos quizzes favoritos.
+//   Un quiz tiene muchos fans (los usuarios que lo han marcado como favorito)
+User.belongsToMany(Quiz, {as: 'Favourites', 
+                          through: 'Favourites'});
+Quiz.belongsToMany(User, {as: 'Fans',
+                          through: 'Favourites'}); 
 
 exports.Quiz = Quiz; //Exportar definicion de la tabla Quiz
 exports.Comment = Comment; // Exportar definición tabla Comments

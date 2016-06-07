@@ -29,6 +29,11 @@ section { text-align: left;}
 footer { text-align: center;}
 nav a { margin: 0px 10px 0px 0px;}
 
+.stars {
+  float: left;
+  clear: both;  
+}
+
 #flashinfo {
   width: 450px;
   border: 2px solid blue;

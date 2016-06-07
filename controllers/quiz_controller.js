@@ -41,7 +41,6 @@ exports.ownershipRequired = function(req, res, next){
     }
 };
 
-
 // GET /quizzes
 exports.index = function(req, res, next) {
 
@@ -52,6 +51,11 @@ var options = {};
 
  options.include = [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}];
 
+// Para usuarios logeados: incluir los fans de las preguntas.
+ if (req.session.user) {
+   options.include.push({ model: models.User, as: 'Fans' });
+  }
+
 	if(req.query.busqueda){
 		var texto_a_buscar = '%' + req.query.busqueda + '%';
 		texto_a_buscar = texto_a_buscar.replace(/ /g, "%"); //Reemplaza los espacios en blanco por %
@@ -59,6 +63,15 @@ var options = {};
 		models.Quiz.findAll({where: ["question like ?", texto_a_buscar],
                          include: [models.Attachment, {model: models.User, as: 'Author', attributes: ['username']}]})
 		.then(function(quizzes) {
+
+      if (req.session.user) {
+        quizzes.forEach(function(quiz) {
+                    quiz.favourite = quiz.Fans.some(function(fan) {
+                        return fan.id == req.session.user.id;
+                    }); 
+                  });
+            } 
+            
 			if(quizzes[0]!== undefined){
 				req.flash('success', 'Su búsqueda produjo estos resultados:');
 			}
@@ -85,6 +98,18 @@ var options = {};
 	else {
 		models.Quiz.findAll(options)
 		.then(function(quizzes) {
+           // Para usuarios logeados:
+           // Añado a todos los quizzes un atributo booleano llamado "favourite"
+           // que indica si el quiz es uno de mis favoritos o no. 
+            if (req.session.user) {
+
+                quizzes.forEach(function(quiz) {
+                    quiz.favourite = quiz.Fans.some(function(fan) {
+                        return fan.id == req.session.user.id;
+                    });
+                });
+            } 
+
 			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
 		.catch(function(error) {
@@ -101,8 +126,29 @@ exports.show = function (req, res, next){
   
   else {
   var answer = req.query.answer || '';
-  res.render('quizzes/show.ejs', {quiz: req.quiz, answer : answer});
-}
+    // Para usuarios logeados:
+    //   Si el quiz es uno de mis favoritos, creo un atributo llamado
+    //   "favourite" con el valor true.
+    if (req.session.user) {
+
+        req.quiz.getFans({where: {id: req.session.user.id}})
+            .then(function(fans) {
+                if (fans.length > 0) {
+                    req.quiz.favourite = true;
+                }      
+            })
+            .then(function() {
+                res.render('quizzes/show', { quiz: req.quiz,
+                                             answer: answer});
+            })
+            .catch(function(error){
+                next(error);
+ });
+    } else {
+        res.render('quizzes/show', {quiz: req.quiz,
+                                    answer: answer});
+    }
+  }
 };
 
 // GET /quizzes/:id/check
@@ -141,7 +187,7 @@ exports.create = function(req, res, next) {
         .then(function(uploadResult) {
             // Crear nuevo attachment en la BBDD.
             return createAttachment(req, uploadResult, quiz);
-        });
+ });
     })
     .then(function() {
         res.redirect(redir);
@@ -332,4 +378,3 @@ function uploadResourceToCloudinary(req) {
         );
     })
 }
-

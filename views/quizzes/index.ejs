@@ -8,6 +8,10 @@
 <table>
   <% for (var i in quizzes) { %>        
      <tr>
+     <td>
+          <% var quiz = quizzes[i]; %>      
+          <%- include ../favourites/_stars.ejs %>
+     </td>
         <td>
            <% if (quizzes[i].Attachment) { %>
              <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
