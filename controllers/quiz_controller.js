@@ -268,6 +268,16 @@ exports.destroy = function(req, res, next) {
     var redir = req.query.redir || 
                 url.parse(req.headers.referer || "/quizzes").pathname;
 
+    // Borrar comentarios al eliminar la pregunta
+    models.Comment.findAll({where: {quizId: req.quiz.id}})
+    .then(function(comments) {
+      if(comments){
+         for(c in comments){
+          comments[c].destroy();
+         }
+      }
+    });
+
     // Borrar la imagen de Cloudinary (Ignoro resultado)
     if (req.quiz.Attachment) {
         cloudinary.api.delete_resources(req.quiz.Attachment.public_id);
